@@ -21,6 +21,8 @@ names(mergedData) <- gsub("V*","", names(mergedData))
 # STEP 3: EXTRACTING ONLY THE MEASUREMENTS ON THE MEAN AND STDEV
 names(features) <- c("activity", "feature")
 features <- features[grepl(".*mean.*|.*std.*", features$feature),]
+
+# SELECT ONLY MEAN AND STDEV COLUMNS
 vars <- names(mergedData) %in% features$activity 
 cleanData <- mergedData[vars]
 
@@ -46,4 +48,5 @@ for (activityLabel in activity_labels$V2) {
 require("plyr")
 
 average_data <- ddply(cleanData, .(activity, subject), function(x) colMeans(x[, 1:(ncol(cleanData)-2)]))
-write.table(average_data, "tidy.txt", sep="\t")
+average_data <- average_data[, 3:ncol(average_data)]
+write.table(average_data, "tidy.txt", sep="\t", row.name=FALSE)
